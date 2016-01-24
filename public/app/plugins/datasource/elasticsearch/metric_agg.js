@@ -134,22 +134,6 @@ function (angular, _, queryDef) {
       return $scope.getFields({$fieldType: 'number'});
     };
 
-    $scope.addMetricAgg = function() {
-      var addIndex = metricAggs.length;
-
-      var id = _.reduce($scope.target.bucketAggs.concat($scope.target.metrics), function(max, val) {
-        return parseInt(val.id) > max ? parseInt(val.id) : max;
-      }, 0);
-
-      metricAggs.splice(addIndex, 0, {type: "count", field: "select field", id: (id+1).toString()});
-      $scope.onChange();
-    };
-
-    $scope.removeMetricAgg = function() {
-      metricAggs.splice($scope.index, 1);
-      $scope.onChange();
-    };
-
     $scope.toggleShowMetric = function() {
       $scope.agg.hide = !$scope.agg.hide;
       if (!$scope.agg.hide) {
