@@ -1,0 +1,9 @@
+{
+  "type": "datasource",
+  "name": "Fixed Schema Elasticsearch",
+  "id": "es",
+
+  "defaultMatchFormat": "lucene",
+  "annotations": true,
+  "metrics": true
+}
