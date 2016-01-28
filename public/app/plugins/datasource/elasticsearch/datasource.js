@@ -197,8 +197,32 @@ function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticRes
       });
     };
 
-    this.getFields = function(query) {
+    // In the Fixed ES Schema, metrics names are the _type
+    // field in the mapping
+    this.getIndexTypes = function() {
       return this._get('/_mapping').then(function(res) {
+        var fields = {};
+
+        for (var indexName in res) {
+          var index = res[indexName];
+          var mappings = index.mappings;
+          if (!mappings) { continue; }
+          for (var typeName in mappings) {
+            if (typeName === '_default_') { continue; }
+            fields[typeName] = {text: typeName, type: 'string'};
+          }
+        }
+
+        // transform to array
+        return _.map(fields, function(value) {
+          return value;
+        });
+      });
+    };
+
+    // All the fields are associated to a metric.
+    this.getFields = function(metric, query) {
+      return this._get('/_mapping/'+metric).then(function(res) {
         var fields = {};
         var typeMap = {
           'float': 'number',
@@ -220,7 +244,8 @@ function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticRes
               if (query.type && typeMap[prop.type] !== query.type) {
                 continue;
               }
-              if (prop.type && field[0] !== '_') {
+              // We must also remove the metric name
+              if (prop.type && field[0] !== '_' && field !== metric) {
                 fields[field] = {text: field, type: prop.type};
               }
             }
@@ -252,7 +277,7 @@ function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticRes
       });
     };
 
-    this.metricFindQuery = function(query) {
+    this.metricFindQuery = function(metric, query) {
       query = templateSrv.replace(query);
       query = angular.fromJson(query);
       if (!query) {
@@ -260,7 +285,7 @@ function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticRes
       }
 
       if (query.find === 'fields') {
-        return this.getFields(query);
+        return this.getFields(metric, query);
       }
       if (query.find === 'terms') {
         return this.getTerms(query);

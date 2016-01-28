@@ -60,7 +60,7 @@
 	<div ng-repeat="agg in target.metrics">
 		<elastic-metric-agg
 			target="target" index="$index"
-			get-fields="getFields($fieldType)"
+			get-fields="getMetrics()"
 			on-change="queryUpdated()"
 			es-version="esVersion">
 		</elastic-metric-agg>
