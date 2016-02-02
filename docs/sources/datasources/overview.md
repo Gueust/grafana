@@ -16,6 +16,7 @@ The following datasources are officially supported:
 
 * [Graphite](/datasources/graphite/)
 * [Elasticsearch](/datasources/elasticsearch/)
+* [Fixed Schema Elasticsearch](/datasources/es/)
 * [CloudWatch](/datasources/cloudwatch/)
 * [InfluxDB](/datasources/influxdb/)
 * [OpenTSDB](/datasources/opentsdb/)
